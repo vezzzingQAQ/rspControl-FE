@@ -1,0 +1,50 @@
+@import url(./varb.less);
+* {
+    font-weight: 100;
+    letter-spacing: 2px;
+    box-sizing: border-box;
+}
+.normalScrollBar {
+    -webkit-appearance: none;
+    outline: none;
+    border: @slider_border;
+    border-radius: @panInnerElements_borderRadius;
+    padding: 0 !important;
+    margin: 0;
+    margin-top: 5px;
+    padding: 0;
+    height: 15px;
+    &::-webkit-slider-runnable-track {
+        -webkit-appearance: none;
+        background-color: rgba(254, 161, 0, 0);
+        height: 15px;
+    }
+    &:focus {
+        outline: none;
+    }
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        display: block;
+        height: 15px;
+        width: 15px;
+        padding: 0;
+        margin: 0;
+        border-radius: @panInnerElements_borderRadius;
+        background-color: rgb(203, 203, 203);
+    }
+}
+.darkPannel {
+    background-color: rgba(0, 0, 0, 0.449);
+    backdrop-filter: blur(10px);
+    padding-left: @pan_padding_left;
+    padding-right: @pan_padding_right;
+    padding-top: @pan_padding_top;
+    padding-bottom: @pan_padding_bottom;
+    border: 1px solid gray;
+    color: white;
+}
+
+.error_show {
+    font-weight: normal !important;
+    color: rgb(255, 132, 0);
+}

@@ -1,0 +1,47 @@
+.title {
+  letter-spacing: 2px;
+}
+.containerPan {
+  position: absolute;
+  width: 300px !important;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: 0.5s ease-in-out;
+}
+.containerPan .register_box {
+  display: flex;
+  flex-direction: column;
+}
+.containerPan .register_box .form_placeHolder {
+  margin-top: 7px;
+  margin-bottom: 7px;
+  padding-left: 5px;
+  height: 30px;
+  line-height: 30px;
+  letter-spacing: 20x;
+  transition: 0.5s ease-in-out;
+  font-size: 14px;
+}
+.containerPan .register_box .form_placeHolder a {
+  text-decoration: none;
+  color: yellow;
+}
+.containerPan .register_box input {
+  outline: none;
+  border: none;
+  border-bottom: 1px solid gray;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: transparent;
+  color: white;
+}
+.containerPan .register_box .submit_btn {
+  margin-top: 20px;
+  height: 35px;
+  border: none;
+  border-radius: 6px !important;
+  cursor: pointer;
+  color: white;
+  background-color: #000000;
+}

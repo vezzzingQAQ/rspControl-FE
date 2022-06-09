@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>注册</title>
+
+    <script src="./../../support/source.js"></script>
+
+    <script src="./../support/js/public.js"></script>
+    <link rel="stylesheet" href="./../support/css/public.css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+    <link rel="stylesheet" href="./support/css/main.css">
+
+    <script src="./../../support/vue/vue.js"></script>
+
+    <script src="./../../support/axios/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="containerPan darkPannel">
+            <h2 class="title"><i class="fa fa-home"></i>注册</h2>
+            <div class="register_box">
+                <input class="form_placeHolder" type="text" name="userName" placeholder="请输入用户名" v-model="userName">
+                <p class="form_placeHolder error_show" v-show="!userNameValid">用户名已存在</p>
+                <input class="form_placeHolder" type="password" name="passWord" placeholder="请输入密码" v-model="passWord">
+                <input class="form_placeHolder" type="password" id="passwordConfirm" placeholder="请再次输入密码"
+                    v-model="passWord2">
+                <p class="form_placeHolder error_show" v-show="passWord != passWord2">两次输入的密码不一致</p>
+                <input class="form_placeHolder" type="text" name="validCode" placeholder="请输入邀请码" v-model="validCode">
+                <p class="form_placeHolder error_show" v-show="!validCodeValid">邀请码不正确</p>
+                <input class="form_placeHolder submit_btn" v-show="passWord == passWord2" type="submit" value="注册"
+                    @click="actionRegister">
+                <p class="form_placeHolder">已有账号?-><a href="./login.html">登录</a></p>
+            </div>
+        </div>
+        <div class="rightPan">
+            <div class="imgDisplayPan"></div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: ".container",
+            data: {
+                userName: "",
+                passWord: "",
+                passWord2: "",
+                validCode: "",
+                userNameValid: true,
+                validCodeValid: true,
+            },
+            methods: {
+                actionRegister() {
+                    // 注册
+                    let url = source + "/api/users/actionRegister";
+                    let param = new URLSearchParams()
+                    param.append('userName', this.userName)
+                    param.append('passWord', this.passWord)
+                    param.append('validCode', this.validCode)
+                    axios({
+                        method: 'post',
+                        url: url,
+                        data: param
+                    }).then((response) => {
+                        if (getState(response) == 1) {
+                            if (!getContent(response).userNameValid) {
+                                this.userNameValid = false;
+                                this.userName = "";
+                            }
+                            if (!getContent(response).validCodeValid) {
+                                this.validCodeValid = false;
+                                this.validCode = "";
+                            }
+                            if (this.userNameValid && this.validCodeValid) {
+                                // 跳转登录页
+                                location = localSource + "/pages/registerLoginPage/login.html";
+                            }
+                        }
+                    }, (err) => {
+                        alert("fail");
+                        console.log(err)
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

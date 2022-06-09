@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>登录</title>
+
+    <script src="./../../support/source.js"></script>
+
+    <script src="./../support/js/public.js"></script>
+    <link rel="stylesheet" href="./../support/css/public.css">
+
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+
+    <link rel="stylesheet" href="./support/css/main.css">
+
+    <script src="./../../support/vue/vue.js"></script>
+
+    <script src="./../../support/axios/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="containerPan darkPannel">
+            <h2 class="title"><i class="fa fa-home"></i> 登录</h2>
+            <div class="register_box">
+                <input class="form_placeHolder" type="text" name="userName" placeholder="请输入用户名" v-model="userName">
+                <input class="form_placeHolder" type="password" name="passWord" placeholder="请输入密码" v-model="passWord">
+                <p class="form_placeHolder error_show" v-show="!loginValid">用户名或密码错误</p>
+                <input class="form_placeHolder submit_btn" v-show="userName!=''&&passWord!=''" type="submit" value="登录"
+                    @click="actionLogin">
+                <p class="form_placeHolder">没有账号?-><a href="./register.html">注册</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: ".container",
+            data: {
+                userName: "",
+                passWord: "",
+                loginValid: true,
+            },
+            methods: {
+                actionLogin() {
+                    // 登录
+                    let url = source + "/api/users/actionLogin";
+                    let param = new URLSearchParams()
+                    param.append('userName', this.userName)
+                    param.append('passWord', this.passWord)
+                    axios({
+                        method: 'post',
+                        url: url,
+                        data: param
+                    }).then((response) => {
+                        if (getState(response) == 1) {
+                            if (getContent(response).isLogin) {
+                                // 登陆成功,跳转管理页面
+                                setJwt(getContent(response).jwt);
+                                location = localSource + "/pages/mainPan/index.html";
+                            } else {
+                                // 登陆失败,更新数据
+                                this.loginValid = false;
+                            }
+                        }
+                    }, (err) => {
+                        alert("fail");
+                        console.log(err)
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

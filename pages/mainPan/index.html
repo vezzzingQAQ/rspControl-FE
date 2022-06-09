@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Title</title>
+
+    <script src="./../../support/source.js"></script>
+
+    <script src="./../support/js/public.js"></script>
+    <!--Three.js-->
+    <script src="./../../support/threejs/three.js"></script>
+    <script src="./../../support/threejs/jsm/sky.js"></script>
+    <script src="./../../support/threejs/jsm/inflate.min.js"></script>
+    <script src="./../../support/threejs/jsm/FBXLoader.js"></script>
+    <script src="./../../support/threejs/jsm/OrbitControls.js"></script>
+    <!--colorPicker.js-->
+    <script src="./../../support/colorPicker/colorPicker.min.js"></script>
+    <!--font-awesome-cdn-->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <!--threejsSupport-->
+    <script src="./support/js/modelLoader.js"></script>
+    <!--style-->
+    <link rel="stylesheet" href="./support/css/main.css">
+    <link rel="stylesheet" href="./../support/css/public.css">
+    <!--vue.js-->
+    <script src="./../../support/vue/vue.js"></script>
+    <!--axios-->
+    <script src="./../../support/axios/axios.min.js"></script>
+    <!--rspPack-->
+    <script src="./support/js/rspPack.js"></script>
+    <!--codeMirror-->
+    <script src="./../../support/codeMirror/codemirror.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./../../support/codeMirror/codemirror.css">
+    <link rel="stylesheet" type="text/css" href="./../../support/codeMirror/theme/dracula.css">
+    <script src="./../../support/codeMirror/addon/edit/closebrackets.js"></script>
+    <script src="./../../support/codeMirror/addon/edit/closetag.js"></script>
+    <script src="./../../support/codeMirror/addon/edit/matchbrackets.js"></script>
+    <script src="./../../support/codeMirror/addon/edit/matchtags.js"></script>
+    <script src="./../../support/codeMirror/mode/javascript.js"></script>
+    <!--initEditor-->
+    <script src="./support/js/codeHighLight.js"></script>
+    <!--detactLoop-->
+    <script src="./support/js/loopDetactor.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="modelDisplayPan"></div>
+        <div class="buttonPanLeft buttonPan">
+            <div class="normalPan darkPannel" id="pan1">
+                <h2><i class="fa fa-home"></i> {{userName}}的家</h2>
+                <p>时间 : {{getDisplayTime()}} 点钟
+                    <span class="button_p" style="width: 40px;display: inline;border:none!important;background-color: transparent!important;" v-show="!isTimeGo"
+                        @click="isTimeGo=true"><i class="fa fa-play"></i></span>
+                    <span class="button_p" style="width: 40px;display: inline;border:none!important;background-color: transparent!important;" v-show="isTimeGo"
+                        @click="isTimeGo=false"><i class="fa fa-stop"></i></span>
+                </p>
+                <input class="normalScrollBar" type="range" min="-90" max="270" step="0.001" v-model="currentTime"
+                    id="currentTime_dom">
+                <p>风格化渲染 : {{Math.floor(chrRender*100)}} %</p>
+                <input class="normalScrollBar" type="range" min="0" max="1" step="0.01" v-model="chrRender"
+                    id="chrRender_dom">
+                <div class="innerButtonPan">
+                    <p class="button_p" @click="logout">退出登录 <i class="fa fa-sign-out"></i></p>
+                    <p class="button_p">关于 <i class="fa fa-info-circle"></i></p>
+                </div>
+            </div>
+            <div class="normalPan darkPannel" id="pan3">
+                <div class="innerPan">
+                    <p class="subTitle"><i class="fa fa-star"></i> 彩灯颜色控制</p>
+                    <canvas id="color-picker" class="RGBLEDcontrol" @mousemove="changeRGBLED" @touchmove="changeRGBLED"></canvas>
+                    <input type="text" id="RGBcolorDisplay" class="noramlTextInput colorInfoDisplay" v-model="color16">
+                </div>
+                <div class="innerPan">
+                    <p class="subTitle"><i class="fa fa-lightbulb-o"></i> 一楼主灯亮度</p>
+                    <input class="normalScrollBar" type="range" min="0" max="100" step="0.1" v-model="brightness"
+                        id="lightDensity_dom">
+                    <input id="brightnessDisplay" class="noramlTextInput colorInfoDisplay" :style="brightnessStyle_obj"
+                        v-model="brightness">
+                </div>
+                <div class="innerPan">
+                    <p class="subTitle" style="margin-bottom: 0;"><i class="fa fa-tree"></i> WS2812灯条</p>
+                    <div class="wsPan" v-for="(light,index) in wsColor">
+                        <p class="ws_color">R: <input class="normalScrollBar" type="range" min="0" max="255" step="0.1"
+                                v-model="light.r" @change="changeWS2812LED(light.r,light.g,light.b,index)"
+                                id="lightDensity_dom"></p>
+                        <p class="ws_color">G: <input class="normalScrollBar" type="range" min="0" max="255" step="0.1"
+                                v-model="light.g" @change="changeWS2812LED(light.r,light.g,light.b,index)"
+                                id="lightDensity_dom"></p>
+                        <p class="ws_color">B: <input class="normalScrollBar" type="range" min="0" max="255" step="0.1"
+                                v-model="light.b" @change="changeWS2812LED(light.r,light.g,light.b,index)"
+                                id="lightDensity_dom"></p>
+                        <p class="ws_color_show" :style="{backgroundColor:'rgb('+light.r+','+light.g+','+light.b+')'}">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="buttonPanRight buttonPan">
+            <div class="normalPan darkPannel" id="pan4">
+                <p class="subTitle"><i class="fa fa-code"></i> 自定义亮灯代码</p>
+                <input class="noramlTextInput" v-model="codeName" placeholder="代码片段名称">
+                <textarea spellcheck="false" id="codeIntro" class="noramlTextInput" v-model="codeIntro"
+                    placeholder="代码片段简介"></textarea>
+                <textarea spellcheck="false" id="customCode" v-model="customCode"></textarea>
+                <p class="error_show" v-show="isHaveError" style="color: lightpink;">代码有BUG哦</p>
+                <p class="error_show" v-show="isRewrite">已有同名项目,是否覆盖?</p>
+                <div class="innerButtonPan">
+                    <p class="button_p" @click="addProject(0)" v-show="!isRewrite">保存代码 <i
+                            class="fa fa-cloud-upload"></i></p>
+                    <p class="button_p" v-show="!isRunCode" @click="runCode">运行 <i class="fa fa-play"></i></p>
+                    <p class="button_p" v-show="isRunCode" @click="stopCode">停止 <i class="fa fa-stop"></i></p>
+                    <p class="button_p" v-show="isRewrite" @click="addProject(1)">是 <i class="fa fa-check"></i></p>
+                    <p class="button_p" v-show="isRewrite" @click="cancelRewriteProject">否 <i class="fa fa-close"></i>
+                    </p>
+                </div>
+            </div>
+            <div class="normalPan darkPannel" id="pan5">
+                <p class="subTitle"><i class="fa fa-database"></i> 代码片段仓库</p>
+                <div class="codeSnipOuterContainer">
+                    <div v-for="project in codesList" class="codeSnipContainer" @click="getProject(project.id);">
+                        <div class="infoDisplayPan">
+                            <p class="projectName">{{project.name}}</p>
+                            <p class="projectIntro">{{project.intro}}</p>
+                            <p class="projectTime">{{project.createTime}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./support/js/page.js"></script>
+</body>
+
+</html>
